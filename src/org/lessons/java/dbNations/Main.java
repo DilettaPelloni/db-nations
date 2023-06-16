@@ -125,6 +125,7 @@ public class Main {
                 try(PreparedStatement ps = c.prepareStatement(languageQuery)) {
 
                     ps.setInt(1, choosenId); //setto il valore ? della query
+
                     try(ResultSet rs = ps.executeQuery()) { //eseguo la query e uso il ResultSet
                         List<String> languages = new ArrayList<>(); //lista che conterrà le lingue
                         while (rs.next()) {
@@ -142,23 +143,33 @@ public class Main {
                     }
                 }
 
+                System.out.println("Statistiche più recenti:");
+
+                //definisco la query che otterrà le statistiche più recenti
+                String statisticQuery = """
+                        SELECT `country_stats`.`year`, `country_stats`.`population`, `country_stats`.`gdp`
+                        FROM `country_stats`
+                        WHERE `country_stats`.`country_id` = ?
+                        ORDER BY `country_stats`.`year` DESC
+                        LIMIT 1;
+                """;
+
+                try(PreparedStatement ps = c.prepareStatement(statisticQuery)) {
+
+                    ps.setInt(1, choosenId); //setto il valore ? della query
+
+                    try(ResultSet rs = ps.executeQuery()) { //eseguo la query e uso il ResultSet
+                        if(rs.next()) {//ho usato limit 1 quindi ci sarà solo una riga, non serve un while
+                            System.out.println("Anno: " + rs.getString("year"));
+                            System.out.println("Popolazione: " + rs.getString("population"));
+                            System.out.println("GDP: " + rs.getString("gdp"));
+                        }
+                    }
+                }
 
             } else {
                 System.out.println("L'id " + choosenId + " non è valido");
             }
-
-
-            //definisco la query che otterrà le statistiche più recenti
-//            String statisticQuery = """
-//                   SELECT `countries`.`name`, `country_stats`.`year`, `country_stats`.`population`, `country_stats`.`gdp`
-//                   FROM `countries`
-//                   JOIN `country_stats` ON `countries`.`country_id` = `country_stats`.`country_id`
-//                   WHERE `countries`.`country_id` = ?
-//                   ORDER BY `country_stats`.`year` DESC
-//                   LIMIT 1;
-//            """;
-
-
 
         }catch (SQLException e) {  //in caso il collegamento non abbia funzionato
             System.out.println("Errore durante il collegamento al DB");
