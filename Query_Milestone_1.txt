@@ -1,0 +1,5 @@
+SELECT `countries`.`name` AS `country_name`, `countries`.`country_id`, `regions`.`name` AS `region_name`, `continents`.`name` AS `continent_name`
+FROM `countries`
+JOIN `regions` ON `countries`.`region_id` = `regions`.`region_id`
+JOIN `continents` ON `regions`.`continent_id` = `continents`.`continent_id`
+ORDER BY `country_name`;
