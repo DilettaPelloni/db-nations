@@ -5,7 +5,6 @@ import com.bethecoder.ascii_table.ASCIITable;
 
 import java.sql.*;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Scanner;
 
@@ -115,11 +114,10 @@ public class Main {
 
                 //definisco la query che otterrà le lingue
                 String languageQuery = """
-                        SELECT `countries`.`name` AS `country_name`, `languages`.`language`
-                        FROM `countries`
-                        JOIN `country_languages` ON `countries`.`country_id` = `country_languages`.`country_id`
-                        JOIN `languages` ON `country_languages`.`language_id` = `languages`.`language_id`
-                        WHERE `countries`.`country_id` = ?;
+                        SELECT `languages`.`language`
+                        FROM `languages`
+                        JOIN `country_languages` ON `languages`.`language_id` = `country_languages`.`language_id`
+                        WHERE `country_languages`.`country_id` = ?;
                 """;
 
                 try(PreparedStatement ps = c.prepareStatement(languageQuery)) {
